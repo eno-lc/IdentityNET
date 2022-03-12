@@ -30,12 +30,18 @@ namespace IdentityNET.Pages.Account
                     new Claim(ClaimTypes.Email, "admin@admin.com"),
                     new Claim("Department", "HR"),
                     new Claim("Department","Administrator"),
-                    new Claim("Department", "Manager")
+                    new Claim("Department", "Manager"),
+                    new Claim("EmploymentData", "03-12-2021")
                     };
                 var identity = new ClaimsIdentity(claims, "CookieAuthentication");
                 ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);
 
-                await HttpContext.SignInAsync("CookieAuthentication", claimsPrincipal);
+                var authProperties = new AuthenticationProperties
+                {
+                    IsPersistent = Credential.RememberMe 
+                };
+
+                await HttpContext.SignInAsync("CookieAuthentication", claimsPrincipal, authProperties);
                 
                 return RedirectToPage("/Index");
             }
@@ -52,6 +58,9 @@ namespace IdentityNET.Pages.Account
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        [Display(Name = "Remember Me")]
+        public bool RememberMe { get; set; }
     }
 
 
